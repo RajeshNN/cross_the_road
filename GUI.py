@@ -54,8 +54,6 @@ class environ:
         self.player.update_xpos(x1+30)
     def up_key(self):
         x1, y1, x2, y2 = self.pl.c.coords(self.pl.obj)
-        print(y1, y2)
-        print(self.car_coords.car_dict)
         if self.pl.c == self.footpath2:
             self.player.canv_flag = 1
             self.pl.c.delete(self.pl.obj)
@@ -95,7 +93,7 @@ class environ:
             for car in self.car_coords.lane_dict[lane]:
                 llim = self.car_coords.car_dict[car][1] - 50
                 rlim = self.car_coords.car_dict[car][1] + 50
-                if xpos>llim and xpos<rlim:
+                if xpos+30>llim and xpos<rlim:
                     self.cancel = True
     def draw_car(self, img, a, b):
         return car_GUI(self.road, img, a, b)
@@ -110,7 +108,7 @@ class environ:
                         self.car_coords.r_update(key, reset = 1)
                 else:
                     self.road.move(self.car_imgs[key][1].obj, -5, 0)
-                    self.car_coords.l_update(key, reset = 1)
+                    self.car_coords.l_update(key)
                     if self.road.coords(self.car_imgs[key][1].obj)[0] == -50:
                         self.road.move(self.car_imgs[key][1].obj, 800, 0)
                         self.car_coords.l_update(key, reset = 1)
