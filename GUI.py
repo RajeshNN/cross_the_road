@@ -159,6 +159,9 @@ class player_GUI:
         self.photo = ImageTk.PhotoImage(self.img)
         self.mphoto = ImageTk.PhotoImage(self.mimg)
         self.obj = c.create_image(x, y, image = self.photo)
+def main():
+    app = environ()
+    tk.mainloop()
 
-app = environ()
-tk.mainloop()
+if __name__ == "__main__":
+    main()
