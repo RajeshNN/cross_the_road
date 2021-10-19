@@ -21,4 +21,4 @@ class cars:
         if not reset:
             self.car_dict[key][1] -= 5
         else:
-            self.car_dict[key][1] = 850
+            self.car_dict[key][1] = 750
