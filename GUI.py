@@ -8,12 +8,12 @@ from player import player
 class environ:
     def __init__(self):
         self.w = tk.Tk(className = ' Cross The Road')
-        self.car_imgs = {}
         self.cancel = False
         self.won = 0
         self.root = os.getcwd()
         self.right_img_files = ['redright.png', 'blueright.png', 'greenright.png']
         self.left_img_files = ['redleft.png', 'blueleft.png', 'greenleft.png']
+        self.car_imgs = {}
         self.car_coords = cars()
         self.player = player()
         self.footpath1 = tk.Canvas(self.w, height = 50, width = 700, highlightbackground = 'black')
@@ -22,8 +22,14 @@ class environ:
         self.road = tk.Canvas(self.w, height = 300, width = 700, bg = 'light blue', highlightbackground = 'black')
         self.road.grid(row = 1, column = 0, rowspan = 1, columnspan = 1)
         self.footpath2 = tk.Canvas(self.w, height = 50, width = 700, highlightbackground = 'black')
-        self.footpath2.grid(row = 7, column = 0, rowspan = 1, columnspan = 1)
+        self.footpath2.grid(row = 2, column = 0, rowspan = 1, columnspan = 1)
         self.color_footpath(self.footpath2, 7)
+        self.panel = tk.Canvas(self.w, height = 300, width = 700, bg = 'light blue', highlightbackground = 'black')
+        self.panel.grid(row = 3, column = 0, rowspan = 1, columnspan = 1)
+        self.btn1 = tk.Button(self.panel, bg = 'SpringGreen2', text = 'Stop', font=('Helvetica 10 bold'), width = 10, height = 1, command = lambda: self.stop_game())
+        self.btn1.grid(row = 0, column = 4, ipadx = 10)
+        self.btn2 = tk.Button(self.panel, bg = 'SpringGreen2', text = 'New Game', font=('Helvetica 10 bold'), width = 10, height = 1, command = lambda: self.new_game())
+        self.btn2.grid(row = 0, column = 5, ipadx = 10)
         x = 50
         l = []
         for i in range(5):
@@ -79,6 +85,7 @@ class environ:
             self.player.update_lane(int(y1/50))
     def down_key(self):
         x1, y1  = self.pl.c.coords(self.pl.obj)
+
         if self.pl.c == self.footpath2:
             pass
         elif (self.pl.c == self.road) and (y1 == 275.0):
@@ -91,7 +98,7 @@ class environ:
                 self.pl.obj = self.pl.c.create_image(x1, 25, image = self.pl.mphoto)
         else:
             self.pl.c.move(self.pl.obj, 0, 50)
-            self.player.update_lane(int(y1/50) + 1)
+            self.player.update_lane(int(y1/50) + 2)
     def freeze(self):
         pass
     def call_to_freeze(self):
@@ -137,14 +144,33 @@ class environ:
             self.w.after_cancel(self.after_id)
             self.call_to_freeze()
             if self.won:
-                self.wO = self.road.create_text(350, 150, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'white')
+                self.WO = self.road.create_text(350, 150, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'white')
                 self.BO = self.road.create_text(354, 154, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'black')
                 self.RO = self.road.create_text(352, 152, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'red')
             else:
                 self.WO = self.road.create_text(350, 150, text = 'GAME OVER\nYOU LOSE!!!', font=('Helvetica 30 bold'), fill = 'white')
                 self.BO = self.road.create_text(354, 154, text = 'GAME OVER\nYOU LOSE!!!', font=('Helvetica 30 bold'), fill = 'black')
                 self.RO = self.road.create_text(352, 152, text = 'GAME OVER\nYOU LOSE!!!', font=('Helvetica 30 bold'), fill = 'red')
-
+    def new_game(self):
+        if self.cancel == False:
+            self.cancel = True
+        else:
+            self.cancel = False
+            self.won = 0
+            self.pl.c.delete(self.pl.obj)
+            try:
+                self.road.delete(self.WO, self.BO, self.RO)
+            except:
+                pass
+            self.player = player()
+            self.pl = player_GUI(self.footpath2, self.player.posit[1], 25, os.path.join(self.root, 'chicken.png'))
+            self.w.bind('<Left>', lambda q: self.left_key())
+            self.w.bind('<Right>', lambda q: self.right_key())
+            self.w.bind('<Up>', lambda q: self.up_key())
+            self.w.bind('<Down>', lambda q: self.down_key())
+            self.run()
+    def stop_game(self):
+        self.cancel = True
 class car_GUI:
     def __init__(self, c, img, x, y):
         self.img = (Image.open(img)).resize((100, 50), Image.ANTIALIAS)
