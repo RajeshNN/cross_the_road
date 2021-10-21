@@ -26,10 +26,8 @@ class environ:
         self.color_footpath(self.footpath2, 7)
         self.panel = tk.Canvas(self.w, height = 300, width = 700, bg = 'light blue', highlightbackground = 'black')
         self.panel.grid(row = 3, column = 0, rowspan = 1, columnspan = 1)
-        self.btn1 = tk.Button(self.panel, bg = 'SpringGreen2', text = 'Stop', font=('Helvetica 10 bold'), width = 10, height = 1, command = lambda: self.stop_game())
-        self.btn1.grid(row = 0, column = 4, ipadx = 10)
-        self.btn2 = tk.Button(self.panel, bg = 'SpringGreen2', text = 'New Game', font=('Helvetica 10 bold'), width = 10, height = 1, command = lambda: self.new_game())
-        self.btn2.grid(row = 0, column = 5, ipadx = 10)
+        self.btn = tk.Button(self.panel, bg = 'SpringGreen2', text = 'Stop Game', font=('Helvetica 10 bold'), width = 10, height = 1, command = lambda: self.new_game())
+        self.btn.grid(row = 0, column = 5, ipadx = 10)
         x = 50
         l = []
         for i in range(5):
@@ -51,16 +49,18 @@ class environ:
         self.run()
     def left_key(self):
         x1, y1 = self.pl.c.coords(self.pl.obj)
-        self.pl.c.delete(self.pl.obj)
-        self.pl.obj = self.pl.c.create_image(x1-30, y1, image = self.pl.mphoto)
-        self.pl.r = 0
-        self.player.update_xpos(x1-30)
+        if x1 > 20:
+            self.pl.c.delete(self.pl.obj)
+            self.pl.obj = self.pl.c.create_image(x1-30, y1, image = self.pl.mphoto)
+            self.pl.r = 0
+            self.player.update_xpos(x1-30)
     def right_key(self):
         x1, y1 = self.pl.c.coords(self.pl.obj)
-        self.pl.c.delete(self.pl.obj)
-        self.pl.obj = self.pl.c.create_image(x1+30, y1, image = self.pl.photo)
-        self.pl.r = 1
-        self.player.update_xpos(x1+30)
+        if x1 < 680:
+            self.pl.c.delete(self.pl.obj)
+            self.pl.obj = self.pl.c.create_image(x1+30, y1, image = self.pl.photo)
+            self.pl.r = 1
+            self.player.update_xpos(x1+30)
     def up_key(self):
         x1, y1 = self.pl.c.coords(self.pl.obj)
         if self.pl.c == self.footpath2:
@@ -147,14 +147,18 @@ class environ:
                 self.WO = self.road.create_text(350, 150, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'white')
                 self.BO = self.road.create_text(354, 154, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'black')
                 self.RO = self.road.create_text(352, 152, text = 'YOU WON!!!', font=('Helvetica 30 bold'), fill = 'red')
+                self.btn.config(text = 'New Game')
             else:
                 self.WO = self.road.create_text(350, 150, text = 'GAME OVER\nYOU LOSE!!!', font=('Helvetica 30 bold'), fill = 'white')
                 self.BO = self.road.create_text(354, 154, text = 'GAME OVER\nYOU LOSE!!!', font=('Helvetica 30 bold'), fill = 'black')
                 self.RO = self.road.create_text(352, 152, text = 'GAME OVER\nYOU LOSE!!!', font=('Helvetica 30 bold'), fill = 'red')
+                self.btn.config(text = 'New Game')
     def new_game(self):
         if self.cancel == False:
             self.cancel = True
+            self.btn.config(text = 'New Game')
         else:
+            self.btn.config(text = 'Stop Game')
             self.cancel = False
             self.won = 0
             self.pl.c.delete(self.pl.obj)
@@ -169,8 +173,6 @@ class environ:
             self.w.bind('<Up>', lambda q: self.up_key())
             self.w.bind('<Down>', lambda q: self.down_key())
             self.run()
-    def stop_game(self):
-        self.cancel = True
 class car_GUI:
     def __init__(self, c, img, x, y):
         self.img = (Image.open(img)).resize((100, 50), Image.ANTIALIAS)
