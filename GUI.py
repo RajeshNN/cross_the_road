@@ -180,7 +180,7 @@ class player_GUI:
     def __init__(self, c, x, y, img):
         self.c = c
         self.r = 1
-        self.img = Image.open(img).resize((30, 50), Image.ANTIALIAS)
+        self.img = Image.open(img).resize((30, 60), Image.ANTIALIAS)
         self.mimg = ImageOps.mirror(self.img)
         self.photo = ImageTk.PhotoImage(self.img)
         self.mphoto = ImageTk.PhotoImage(self.mimg)
